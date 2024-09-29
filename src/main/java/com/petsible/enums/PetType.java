@@ -1,0 +1,27 @@
+package com.petsible.enums;
+
+public enum PetType {
+    BIRD,
+    CAT,
+    DOG,
+    FISH,
+    RABBIT,
+    HAMSTER,
+    TURTLE,
+    PARROT,
+    HORSE,
+    GOAT,
+    CHICKEN,
+    RAT,
+    DONKEY,
+    PEACOCK,
+    OSTRICH,
+    DUCK,
+    GOOSE,
+    QUAIL,
+    PIGEON,
+    GOLDFISH,
+    TETRA,
+    ANGELFISH,
+    FROG,
+}
