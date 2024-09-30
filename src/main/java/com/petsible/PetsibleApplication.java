@@ -2,6 +2,9 @@ package com.petsible;
 
 import com.petsible.dto.OwnerDTO;
 import com.petsible.dto.PetDTO;
+import com.petsible.exception.DuplicateOwnerIdException;
+import com.petsible.exception.OwnerNotFoundException;
+import com.petsible.exception.PetNotFoundException;
 import com.petsible.service.OwnerService;
 import com.petsible.service.PetService;
 import com.petsible.util.InputUtil;
@@ -33,16 +36,6 @@ public class PetsibleApplication implements CommandLineRunner {
 			.append("║           Welcome to Petsible         ║\n")
 			.append("╚═══════════════════════════════════════╝");
 
-	private static final StringBuilder MENU = new StringBuilder()
-			.append("\n1. Add new owner and pet")
-			.append("\n2. Find owner")
-			.append("\n3. Update pet details")
-			.append("\n4. Delete owner")
-			.append("\n5. List all owners")
-			.append("\n6. Find pet")
-			.append("\n0. Exit")
-			.append("\nEnter your choice: ");
-
 	// ========== Constructor ==========
 	@Autowired
 	public PetsibleApplication(OwnerService ownerService, PetService petService) {
@@ -61,7 +54,6 @@ public class PetsibleApplication implements CommandLineRunner {
 		try (Scanner scanner = new Scanner(System.in)) {
             do {
                 System.out.println(WELCOME_MESSAGE);
-                System.out.print(MENU);
 
                 int menuOption = InputUtil.acceptMenuOption(scanner);
                 if (menuOption == 0) {
@@ -80,7 +72,7 @@ public class PetsibleApplication implements CommandLineRunner {
 	}
 
 	// ========== Menu Processing ==========
-	private void processMenuOption(int menuOption, Scanner scanner) {
+	private void processMenuOption(int menuOption, Scanner scanner) throws Exception {
 		switch (menuOption) {
 			case 1 -> addNewOwnerAndPet(scanner);
 			case 2 -> findOwner(scanner);
@@ -93,7 +85,7 @@ public class PetsibleApplication implements CommandLineRunner {
 	}
 
 	// ========== Menu Actions ==========
-	private void addNewOwnerAndPet(Scanner scanner) {
+	private void addNewOwnerAndPet(Scanner scanner) throws DuplicateOwnerIdException {
 		OwnerDTO ownerDTO = InputUtil.acceptOwnerDetailsToSave(scanner);
 		PetDTO petDTO = InputUtil.acceptPetDetailsToSave(scanner);
 		ownerDTO.setPetDTO(petDTO);
@@ -101,21 +93,21 @@ public class PetsibleApplication implements CommandLineRunner {
 		System.out.println("Owner and pet have been saved successfully.");
 	}
 
-	private void findOwner(Scanner scanner) {
+	private void findOwner(Scanner scanner) throws OwnerNotFoundException {
 		int ownerId = InputUtil.acceptOwnerIdToOperate(scanner);
 		OwnerDTO ownerDTO = ownerService.findOwner(ownerId);
 		System.out.println("Owner has been fetched successfully.");
 		System.out.println(ownerDTO);
 	}
 
-	private void updatePetDetails(Scanner scanner) {
+	private void updatePetDetails(Scanner scanner) throws OwnerNotFoundException {
 		int ownerId = InputUtil.acceptOwnerIdToOperate(scanner);
 		String petName = InputUtil.acceptPetDetailsToUpdate(scanner);
 		ownerService.updatePetDetails(ownerId, petName);
 		System.out.println("Pet details of owner have been updated successfully.");
 	}
 
-	private void deleteOwner(Scanner scanner) {
+	private void deleteOwner(Scanner scanner) throws OwnerNotFoundException {
 		int ownerId = InputUtil.acceptOwnerIdToOperate(scanner);
 		ownerService.deleteOwner(ownerId);
 		System.out.println("Owner has been deleted successfully.");
@@ -127,7 +119,7 @@ public class PetsibleApplication implements CommandLineRunner {
 		ownerDTOList.forEach(System.out::println);
 	}
 
-	private void findPet(Scanner scanner) {
+	private void findPet(Scanner scanner) throws PetNotFoundException {
 		int petId = InputUtil.acceptPetIdToOperate(scanner);
 		PetDTO petDTO = petService.findPet(petId);
 		System.out.println("Pet has been fetched successfully.");
