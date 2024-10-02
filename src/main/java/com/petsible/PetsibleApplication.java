@@ -14,11 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
 import java.util.Scanner;
 
 @SuppressWarnings("SpellCheckingInspection")
+@PropertySource("classpath:messages.properties")
 @SpringBootApplication
 public class PetsibleApplication implements CommandLineRunner {
 
@@ -52,9 +54,8 @@ public class PetsibleApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		try (Scanner scanner = new Scanner(System.in)) {
+			System.out.println(WELCOME_MESSAGE);
             do {
-                System.out.println(WELCOME_MESSAGE);
-
                 int menuOption = InputUtil.acceptMenuOption(scanner);
                 if (menuOption == 0) {
                     break;
